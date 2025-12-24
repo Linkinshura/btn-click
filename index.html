@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Button Clicker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="juego">
+        <h1>Button Clicker</h1>
+
+        <p>Clicks: <span id="clicks">0</span></p>
+        <p>Clicks por click: <span id="cpc">1</span></p>
+
+        <button id="clickBtn">CLICK</button>
+
+        <div class="tienda">
+            <h2>Tienda</h2>
+
+            <button onclick="comprarMultiplicador()">
+                Multiplicador de click (+1)<br>
+                Costo: <span id="costoMulti">20</span>
+            </button>
+
+            <button onclick="comprarAutoClick()">
+                Click automático (+1/seg)<br>
+                Costo: <span id="costoAuto">50</span>
+            </button>
+        </div>
+
+        <button id="guardarBtn">Guardar progreso</button>
+            <p id="mensaje"></p>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

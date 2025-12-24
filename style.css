@@ -1,0 +1,62 @@
+body {
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.juego {
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    width: 320px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+#clickBtn {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: none;
+    font-size: 24px;
+    margin: 20px 0;
+    cursor: pointer;
+    background: #00c853;
+    color: white;
+}
+
+#clickBtn:active {
+    transform: scale(0.95);
+}
+
+.tienda button {
+    background: #ff9500;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#guardarBtn {
+    margin-top: 15px;
+    background: #2196f3;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+}
+
+#mensaje {
+    margin-top: 8px;
+    color: #00e676;
+    font-size: 14px;
+}
