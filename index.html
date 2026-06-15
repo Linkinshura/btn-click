@@ -10,166 +10,117 @@
 <body>
 
   <header>
-    <div class="header-inner">
-      <span class="site-name">Clicker</span>
-      <div class="coin-display">
-        <span class="coin-icon">●</span>
-        <span id="coin-count">0</span>
-        <span class="coin-label">monedas</span>
-      </div>
+    <span class="logo">● Clicker</span>
+    <div class="coin-pill">
+      <span class="coin-sym">●</span>
+      <span id="coin-count">0</span>
     </div>
   </header>
 
   <main>
 
-    <!-- Panel izquierdo: botón + stats -->
-    <section class="panel panel-click">
+    <!-- Panel clicker -->
+    <section class="panel panel-left">
 
       <div class="stats-row">
         <div class="stat-box">
-          <span class="stat-value" id="cps-display">0</span>
-          <span class="stat-label">por segundo</span>
+          <span class="stat-val" id="cpc-display">1</span>
+          <span class="stat-lbl">por clic</span>
         </div>
         <div class="stat-box">
-          <span class="stat-value" id="cpc-display">1</span>
-          <span class="stat-label">por clic</span>
+          <span class="stat-val" id="cps-display">0</span>
+          <span class="stat-lbl">por segundo</span>
         </div>
         <div class="stat-box">
-          <span class="stat-value" id="total-display">0</span>
-          <span class="stat-label">total ganado</span>
+          <span class="stat-val" id="total-display">0</span>
+          <span class="stat-lbl">total</span>
         </div>
       </div>
 
-      <div class="clicker-area">
-        <button id="main-btn" aria-label="Hacer clic para ganar monedas">
-          <span class="btn-circle">●</span>
+      <div class="clicker-wrap">
+        <button id="main-btn">
+          <span class="btn-coin">●</span>
         </button>
-        <div id="click-fx-container"></div>
+        <div id="fx-layer"></div>
       </div>
 
-      <p class="click-hint">Haz clic para ganar monedas</p>
-
+      <p class="hint">Haz clic para ganar monedas</p>
     </section>
 
-    <!-- Panel derecho: tienda -->
-    <section class="panel panel-shop">
+    <!-- Panel tienda -->
+    <section class="panel panel-right">
+      <p class="shop-heading">Tienda</p>
 
-      <h2 class="shop-title">Tienda</h2>
+      <div class="shop-list">
 
-      <div class="shop-list" id="shop-list">
-
-        <!-- Mejoras de clic -->
-        <div class="shop-section-label">Mejoras de clic</div>
-
-        <div class="shop-item" id="item-finger" data-id="finger">
-          <div class="item-icon">👆</div>
-          <div class="item-info">
-            <div class="item-name">Dedo rápido</div>
-            <div class="item-desc">+1 por clic</div>
+        <div class="shop-item" data-id="finger">
+          <span class="s-icon">👆</span>
+          <div class="s-info">
+            <span class="s-name">Dedo rápido</span>
+            <span class="s-desc">+2 por clic</span>
           </div>
-          <div class="item-right">
-            <div class="item-cost"><span class="coin-dot">●</span> <span class="cost-val">10</span></div>
-            <div class="item-owned">x<span class="owned-val">0</span></div>
+          <div class="s-meta">
+            <span class="s-cost">● <span class="cost-val">10</span></span>
+            <span class="s-owned">x<span class="owned-val">0</span></span>
           </div>
         </div>
 
-        <div class="shop-item" id="item-glove" data-id="glove">
-          <div class="item-icon">🧤</div>
-          <div class="item-info">
-            <div class="item-name">Guante de poder</div>
-            <div class="item-desc">+5 por clic</div>
+        <div class="shop-item" data-id="cursor">
+          <span class="s-icon">🖱️</span>
+          <div class="s-info">
+            <span class="s-name">Cursor mágico</span>
+            <span class="s-desc">+10 por clic</span>
           </div>
-          <div class="item-right">
-            <div class="item-cost"><span class="coin-dot">●</span> <span class="cost-val">75</span></div>
-            <div class="item-owned">x<span class="owned-val">0</span></div>
-          </div>
-        </div>
-
-        <div class="shop-item" id="item-cursor" data-id="cursor">
-          <div class="item-icon">🖱️</div>
-          <div class="item-info">
-            <div class="item-name">Cursor mágico</div>
-            <div class="item-desc">+25 por clic</div>
-          </div>
-          <div class="item-right">
-            <div class="item-cost"><span class="coin-dot">●</span> <span class="cost-val">400</span></div>
-            <div class="item-owned">x<span class="owned-val">0</span></div>
+          <div class="s-meta">
+            <span class="s-cost">● <span class="cost-val">80</span></span>
+            <span class="s-owned">x<span class="owned-val">0</span></span>
           </div>
         </div>
 
-        <!-- Generadores automáticos -->
-        <div class="shop-section-label">Generadores automáticos</div>
-
-        <div class="shop-item" id="item-robot" data-id="robot">
-          <div class="item-icon">🤖</div>
-          <div class="item-info">
-            <div class="item-name">Mini robot</div>
-            <div class="item-desc">+1 por segundo</div>
+        <div class="shop-item" data-id="robot">
+          <span class="s-icon">🤖</span>
+          <div class="s-info">
+            <span class="s-name">Mini robot</span>
+            <span class="s-desc">+3 por segundo</span>
           </div>
-          <div class="item-right">
-            <div class="item-cost"><span class="coin-dot">●</span> <span class="cost-val">50</span></div>
-            <div class="item-owned">x<span class="owned-val">0</span></div>
+          <div class="s-meta">
+            <span class="s-cost">● <span class="cost-val">50</span></span>
+            <span class="s-owned">x<span class="owned-val">0</span></span>
           </div>
         </div>
 
-        <div class="shop-item" id="item-factory" data-id="factory">
-          <div class="item-icon">🏭</div>
-          <div class="item-info">
-            <div class="item-name">Fábrica</div>
-            <div class="item-desc">+8 por segundo</div>
+        <div class="shop-item" data-id="mine">
+          <span class="s-icon">⛏️</span>
+          <div class="s-info">
+            <span class="s-name">Mina de oro</span>
+            <span class="s-desc">+20 por segundo</span>
           </div>
-          <div class="item-right">
-            <div class="item-cost"><span class="coin-dot">●</span> <span class="cost-val">300</span></div>
-            <div class="item-owned">x<span class="owned-val">0</span></div>
-          </div>
-        </div>
-
-        <div class="shop-item" id="item-mine" data-id="mine">
-          <div class="item-icon">⛏️</div>
-          <div class="item-info">
-            <div class="item-name">Mina de oro</div>
-            <div class="item-desc">+30 por segundo</div>
-          </div>
-          <div class="item-right">
-            <div class="item-cost"><span class="coin-dot">●</span> <span class="cost-val">1200</span></div>
-            <div class="item-owned">x<span class="owned-val">0</span></div>
+          <div class="s-meta">
+            <span class="s-cost">● <span class="cost-val">400</span></span>
+            <span class="s-owned">x<span class="owned-val">0</span></span>
           </div>
         </div>
 
-        <div class="shop-item" id="item-rocket" data-id="rocket">
-          <div class="item-icon">🚀</div>
-          <div class="item-info">
-            <div class="item-name">Cohete espacial</div>
-            <div class="item-desc">+150 por segundo</div>
+        <div class="shop-item" data-id="rocket">
+          <span class="s-icon">🚀</span>
+          <div class="s-info">
+            <span class="s-name">Cohete</span>
+            <span class="s-desc">+100 por segundo</span>
           </div>
-          <div class="item-right">
-            <div class="item-cost"><span class="coin-dot">●</span> <span class="cost-val">6000</span></div>
-            <div class="item-owned">x<span class="owned-val">0</span></div>
-          </div>
-        </div>
-
-        <div class="shop-item" id="item-portal" data-id="portal">
-          <div class="item-icon">🌀</div>
-          <div class="item-info">
-            <div class="item-name">Portal dimensional</div>
-            <div class="item-desc">+800 por segundo</div>
-          </div>
-          <div class="item-right">
-            <div class="item-cost"><span class="coin-dot">●</span> <span class="cost-val">30000</span></div>
-            <div class="item-owned">x<span class="owned-val">0</span></div>
+          <div class="s-meta">
+            <span class="s-cost">● <span class="cost-val">2000</span></span>
+            <span class="s-owned">x<span class="owned-val">0</span></span>
           </div>
         </div>
 
       </div>
 
-      <button id="btn-reset" class="btn-reset">Reiniciar</button>
-
+      <button id="btn-reset">↺ Reiniciar</button>
     </section>
 
   </main>
 
-  <!-- Toast de notificación -->
-  <div id="toast" class="toast hidden"></div>
+  <div id="toast"></div>
 
   <script src="script.js"></script>
 </body>
