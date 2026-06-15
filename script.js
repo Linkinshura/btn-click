@@ -1,194 +1,129 @@
-/* ── DEFINICIÓN DE ITEMS DE LA TIENDA ── */
-const SHOP_ITEMS = {
-  // Mejoras de clic (clickPower)
-  finger:  { baseCost: 10,    costMult: 1.5,  clickPower: 1,   cps: 0   },
-  glove:   { baseCost: 75,    costMult: 1.6,  clickPower: 5,   cps: 0   },
-  cursor:  { baseCost: 400,   costMult: 1.7,  clickPower: 25,  cps: 0   },
-  // Generadores (cps = coins per second)
-  robot:   { baseCost: 50,    costMult: 1.5,  clickPower: 0,   cps: 1   },
-  factory: { baseCost: 300,   costMult: 1.55, clickPower: 0,   cps: 8   },
-  mine:    { baseCost: 1200,  costMult: 1.6,  clickPower: 0,   cps: 30  },
-  rocket:  { baseCost: 6000,  costMult: 1.65, clickPower: 0,   cps: 150 },
-  portal:  { baseCost: 30000, costMult: 1.7,  clickPower: 0,   cps: 800 },
+/* ── ITEMS DE LA TIENDA ── */
+const ITEMS = {
+  finger: { clickPower: 2,  cps: 0,   baseCost: 10,   mult: 1.5 },
+  cursor: { clickPower: 10, cps: 0,   baseCost: 80,   mult: 1.6 },
+  robot:  { clickPower: 0,  cps: 3,   baseCost: 50,   mult: 1.5 },
+  mine:   { clickPower: 0,  cps: 20,  baseCost: 400,  mult: 1.6 },
+  rocket: { clickPower: 0,  cps: 100, baseCost: 2000, mult: 1.7 },
 };
 
-/* ── ESTADO ── */
-let state = loadState();
+/* ── ESTADO EN MEMORIA (sin localStorage) ── */
+const state = {
+  coins:  0,
+  total:  0,
+  owned:  { finger: 0, cursor: 0, robot: 0, mine: 0, rocket: 0 },
+};
 
-/* ── DOM ── */
-const coinCountEl  = document.getElementById('coin-count');
-const cpsDisplay   = document.getElementById('cps-display');
-const cpcDisplay   = document.getElementById('cpc-display');
-const totalDisplay = document.getElementById('total-display');
-const mainBtn      = document.getElementById('main-btn');
-const fxContainer  = document.getElementById('click-fx-container');
-const toastEl      = document.getElementById('toast');
-let toastTimer     = null;
-
-
-function defaultState() {
-  return {
-    coins: 0,
-    totalEarned: 0,
-    owned: { finger:0, glove:0, cursor:0, robot:0, factory:0, mine:0, rocket:0, portal:0 },
-  };
+/* ── HELPERS ── */
+function cost(id) {
+  return Math.floor(ITEMS[id].baseCost * Math.pow(ITEMS[id].mult, state.owned[id]));
 }
 
-function loadState() {
-  try {
-    const saved = localStorage.getItem('clicker-save');
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return defaultState();
+function clickPower() {
+  let p = 1;
+  for (const id in ITEMS) p += ITEMS[id].clickPower * state.owned[id];
+  return p;
 }
 
-function saveState() {
-  try { localStorage.setItem('clicker-save', JSON.stringify(state)); } catch(e) {}
+function cps() {
+  let c = 0;
+  for (const id in ITEMS) c += ITEMS[id].cps * state.owned[id];
+  return c;
 }
 
-
-function currentCost(id) {
-  const item = SHOP_ITEMS[id];
-  return Math.floor(item.baseCost * Math.pow(item.costMult, state.owned[id]));
-}
-
-function totalClickPower() {
-  let power = 1;
-  for (const id of Object.keys(SHOP_ITEMS)) {
-    power += SHOP_ITEMS[id].clickPower * state.owned[id];
-  }
-  return power;
-}
-
-function totalCPS() {
-  let cps = 0;
-  for (const id of Object.keys(SHOP_ITEMS)) {
-    cps += SHOP_ITEMS[id].cps * state.owned[id];
-  }
-  return cps;
-}
-
-
-function formatNum(n) {
+function fmt(n) {
+  n = Math.floor(n);
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
   if (n >= 1_000)     return (n / 1_000).toFixed(1) + 'K';
-  return Math.floor(n).toString();
+  return n.toString();
 }
 
-function updateHUD() {
-  coinCountEl.textContent  = formatNum(state.coins);
-  cpsDisplay.textContent   = formatNum(totalCPS());
-  cpcDisplay.textContent   = formatNum(totalClickPower());
-  totalDisplay.textContent = formatNum(state.totalEarned);
-}
+/* ── ACTUALIZAR UI ── */
+function render() {
+  document.getElementById('coin-count').textContent  = fmt(state.coins);
+  document.getElementById('cpc-display').textContent = fmt(clickPower());
+  document.getElementById('cps-display').textContent = fmt(cps());
+  document.getElementById('total-display').textContent = fmt(state.total);
 
-function updateShop() {
-  for (const id of Object.keys(SHOP_ITEMS)) {
-    const el       = document.getElementById(`item-${id}`);
-    const cost     = currentCost(id);
-    const costEl   = el.querySelector('.cost-val');
-    const ownedEl  = el.querySelector('.owned-val');
-
-    costEl.textContent  = formatNum(cost);
-    ownedEl.textContent = state.owned[id];
-
-    if (state.coins < cost) {
-      el.classList.add('disabled');
-    } else {
-      el.classList.remove('disabled');
-    }
+  for (const id in ITEMS) {
+    const el = document.querySelector(`[data-id="${id}"]`);
+    el.querySelector('.cost-val').textContent  = fmt(cost(id));
+    el.querySelector('.owned-val').textContent = state.owned[id];
+    el.classList.toggle('locked', state.coins < cost(id));
   }
 }
 
-function updateAll() {
-  updateHUD();
-  updateShop();
-}
-
-
-mainBtn.addEventListener('click', (e) => {
-  const earned = totalClickPower();
-  state.coins       += earned;
-  state.totalEarned += earned;
-  saveState();
-  updateAll();
-  spawnClickFX(e, earned);
+/* ── BOTÓN PRINCIPAL ── */
+document.getElementById('main-btn').addEventListener('click', function(e) {
+  const earned = clickPower();
+  state.coins += earned;
+  state.total += earned;
+  render();
+  spawnFX(e, earned);
 });
 
-function spawnClickFX(e, amount) {
-  const fx = document.createElement('div');
-  fx.className = 'click-fx';
-  fx.textContent = `+${formatNum(amount)}`;
-
-  // Posición aleatoria alrededor del centro
-  const offsetX = (Math.random() - 0.5) * 80;
-  const offsetY = (Math.random() - 0.5) * 40 - 20;
-  fx.style.left = `calc(50% + ${offsetX}px)`;
-  fx.style.top  = `calc(50% + ${offsetY}px)`;
-
-  fxContainer.appendChild(fx);
-  setTimeout(() => fx.remove(), 800);
+function spawnFX(e, amount) {
+  const layer = document.getElementById('fx-layer');
+  const rect  = layer.getBoundingClientRect();
+  const fx    = document.createElement('div');
+  fx.className   = 'fx';
+  fx.textContent = '+' + fmt(amount);
+  const x = (e.clientX - rect.left) + (Math.random() - 0.5) * 40;
+  const y = (e.clientY - rect.top)  - 10;
+  fx.style.left = x + 'px';
+  fx.style.top  = y + 'px';
+  layer.appendChild(fx);
+  setTimeout(() => fx.remove(), 720);
 }
 
+/* ── TIENDA ── */
+document.querySelector('.shop-list').addEventListener('click', function(e) {
+  const item = e.target.closest('.shop-item');
+  if (!item) return;
 
-document.getElementById('shop-list').addEventListener('click', (e) => {
-  const itemEl = e.target.closest('.shop-item');
-  if (!itemEl) return;
+  const id = item.dataset.id;
+  const c  = cost(id);
+  if (state.coins < c) return;
 
-  const id   = itemEl.dataset.id;
-  const cost = currentCost(id);
-
-  if (state.coins < cost) return;
-
-  state.coins -= cost;
+  state.coins -= c;
   state.owned[id]++;
-  saveState();
-  updateAll();
+  render();
 
-  // Animación de compra
-  itemEl.classList.remove('pulse');
-  void itemEl.offsetWidth; // reflow para reiniciar animación
-  itemEl.classList.add('pulse');
+  item.classList.remove('bought');
+  void item.offsetWidth;
+  item.classList.add('bought');
 
-  showToast(`¡${itemEl.querySelector('.item-name').textContent} comprado!`);
+  toast('¡' + item.querySelector('.s-name').textContent + ' comprado!');
 });
 
+/* ── AUTO CPS ── */
+setInterval(function() {
+  const gain = cps() * 0.1;
+  if (gain === 0) return;
+  state.coins += gain;
+  state.total += gain;
+  render();
+}, 100);
 
-const CPS_TICK = 100; // ms entre ticks
-
-setInterval(() => {
-  const cps = totalCPS();
-  if (cps === 0) return;
-
-  const earned = cps * (CPS_TICK / 1000);
-  state.coins       += earned;
-  state.totalEarned += earned;
-  saveState();
-  updateAll();
-}, CPS_TICK);
-
-
-function showToast(msg) {
-  toastEl.classList.remove('hidden');
-  toastEl.textContent = msg;
-  void toastEl.offsetWidth;
-  toastEl.classList.add('show');
-
+/* ── TOAST ── */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    toastEl.classList.remove('show');
-    setTimeout(() => toastEl.classList.add('hidden'), 250);
-  }, 1800);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
 }
 
-
-document.getElementById('btn-reset').addEventListener('click', () => {
-  if (!confirm('¿Seguro que quieres reiniciar todo el progreso?')) return;
-  state = defaultState();
-  saveState();
-  updateAll();
-  showToast('Progreso reiniciado');
+/* ── REINICIAR ── */
+document.getElementById('btn-reset').addEventListener('click', function() {
+  if (!confirm('¿Reiniciar todo el progreso?')) return;
+  state.coins = 0;
+  state.total = 0;
+  for (const id in state.owned) state.owned[id] = 0;
+  render();
+  toast('Progreso reiniciado');
 });
- */
 
-updateAll();
+/* ── INICIO ── */
+render();
