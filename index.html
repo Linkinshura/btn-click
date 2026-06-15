@@ -1,127 +1,61 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clicker</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Button Clicker</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
-    <span class="logo">● Clicker</span>
-    <div class="coin-pill">
-      <span class="coin-sym">●</span>
-      <span id="coin-count">0</span>
+    <div class="juego">
+        <h1>Button Clicker</h1>
+
+        <div class="stats">
+            <div class="stat-box">
+                <span class="stat-val" id="clicks">0</span>
+                <span class="stat-lbl">clicks</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-val" id="cpc">1</span>
+                <span class="stat-lbl">por click</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-val" id="autoDisplay">0</span>
+                <span class="stat-lbl">por segundo</span>
+            </div>
+        </div>
+
+        <div class="btn-wrap">
+            <button id="clickBtn">CLICK</button>
+            <div id="fxLayer"></div>
+        </div>
+
+        <div class="tienda">
+            <h2>Tienda</h2>
+
+            <button onclick="comprarMultiplicador()">
+                <span class="item-icon">👆</span>
+                <span class="item-text">
+                    Multiplicador de click (+1)<br>
+                    <small>Costo: <span id="costoMulti">20</span></small>
+                </span>
+                <span class="item-owned">x<span id="ownedMulti">0</span></span>
+            </button>
+
+            <button onclick="comprarAutoClick()">
+                <span class="item-icon">🤖</span>
+                <span class="item-text">
+                    Click automático (+1/seg)<br>
+                    <small>Costo: <span id="costoAuto">50</span></small>
+                </span>
+                <span class="item-owned">x<span id="ownedAuto">0</span></span>
+            </button>
+        </div>
+
+        <button id="guardarBtn">Guardar progreso</button>
+        <p id="mensaje"></p>
     </div>
-  </header>
 
-  <main>
-
-    <!-- Panel clicker -->
-    <section class="panel panel-left">
-
-      <div class="stats-row">
-        <div class="stat-box">
-          <span class="stat-val" id="cpc-display">1</span>
-          <span class="stat-lbl">por clic</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-val" id="cps-display">0</span>
-          <span class="stat-lbl">por segundo</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-val" id="total-display">0</span>
-          <span class="stat-lbl">total</span>
-        </div>
-      </div>
-
-      <div class="clicker-wrap">
-        <button id="main-btn">
-          <span class="btn-coin">●</span>
-        </button>
-        <div id="fx-layer"></div>
-      </div>
-
-      <p class="hint">Haz clic para ganar monedas</p>
-    </section>
-
-    <!-- Panel tienda -->
-    <section class="panel panel-right">
-      <p class="shop-heading">Tienda</p>
-
-      <div class="shop-list">
-
-        <div class="shop-item" data-id="finger">
-          <span class="s-icon">👆</span>
-          <div class="s-info">
-            <span class="s-name">Dedo rápido</span>
-            <span class="s-desc">+2 por clic</span>
-          </div>
-          <div class="s-meta">
-            <span class="s-cost">● <span class="cost-val">10</span></span>
-            <span class="s-owned">x<span class="owned-val">0</span></span>
-          </div>
-        </div>
-
-        <div class="shop-item" data-id="cursor">
-          <span class="s-icon">🖱️</span>
-          <div class="s-info">
-            <span class="s-name">Cursor mágico</span>
-            <span class="s-desc">+10 por clic</span>
-          </div>
-          <div class="s-meta">
-            <span class="s-cost">● <span class="cost-val">80</span></span>
-            <span class="s-owned">x<span class="owned-val">0</span></span>
-          </div>
-        </div>
-
-        <div class="shop-item" data-id="robot">
-          <span class="s-icon">🤖</span>
-          <div class="s-info">
-            <span class="s-name">Mini robot</span>
-            <span class="s-desc">+3 por segundo</span>
-          </div>
-          <div class="s-meta">
-            <span class="s-cost">● <span class="cost-val">50</span></span>
-            <span class="s-owned">x<span class="owned-val">0</span></span>
-          </div>
-        </div>
-
-        <div class="shop-item" data-id="mine">
-          <span class="s-icon">⛏️</span>
-          <div class="s-info">
-            <span class="s-name">Mina de oro</span>
-            <span class="s-desc">+20 por segundo</span>
-          </div>
-          <div class="s-meta">
-            <span class="s-cost">● <span class="cost-val">400</span></span>
-            <span class="s-owned">x<span class="owned-val">0</span></span>
-          </div>
-        </div>
-
-        <div class="shop-item" data-id="rocket">
-          <span class="s-icon">🚀</span>
-          <div class="s-info">
-            <span class="s-name">Cohete</span>
-            <span class="s-desc">+100 por segundo</span>
-          </div>
-          <div class="s-meta">
-            <span class="s-cost">● <span class="cost-val">2000</span></span>
-            <span class="s-owned">x<span class="owned-val">0</span></span>
-          </div>
-        </div>
-
-      </div>
-
-      <button id="btn-reset">↺ Reiniciar</button>
-    </section>
-
-  </main>
-
-  <div id="toast"></div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
