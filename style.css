@@ -1,62 +1,406 @@
-body {
-    background: #111;
-    color: white;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.juego {
-    background: #1e1e1e;
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    width: 320px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+:root {
+  --bg:        #f5f5f2;
+  --surface:   #ffffff;
+  --border:    #e4e4e0;
+  --text:      #1a1a18;
+  --muted:     #888884;
+  --coin:      #d4a017;
+  --coin-bg:   #fdf6e3;
+  --accent:    #3a3a38;
+  --btn:       #1a1a18;
+  --btn-hover: #333330;
+  --danger:    #c0392b;
+  --radius:    14px;
+  --radius-sm: 8px;
 }
 
-#clickBtn {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    border: none;
-    font-size: 24px;
-    margin: 20px 0;
-    cursor: pointer;
-    background: #00c853;
-    color: white;
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
-#clickBtn:active {
-    transform: scale(0.95);
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.tienda button {
-    background: #ff9500;
-    border: none;
-    padding: 10px;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-#guardarBtn {
-    margin-top: 15px;
-    background: #2196f3;
-    border: none;
-    padding: 10px;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    width: 100%;
+.site-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  color: var(--text);
 }
 
-#mensaje {
-    margin-top: 8px;
-    color: #00e676;
-    font-size: 14px;
+.coin-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--coin-bg);
+  border: 1px solid #e8d99a;
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+
+.coin-icon {
+  color: var(--coin);
+  font-size: 12px;
+  line-height: 1;
+}
+
+#coin-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+  min-width: 60px;
+}
+
+.coin-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 36px;
+}
+
+.stat-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.stat-label {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+}
+
+/* Botón principal */
+.clicker-area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+#main-btn {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: none;
+  background: var(--btn);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.08s ease, background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 4px 0 #000,
+    0 6px 16px rgba(0,0,0,0.18);
+}
+
+#main-btn:hover {
+  background: var(--btn-hover);
+}
+
+#main-btn:active {
+  transform: scale(0.93) translateY(4px);
+  box-shadow:
+    0 1px 0 #000,
+    0 2px 8px rgba(0,0,0,0.12);
+}
+
+.btn-circle {
+  font-size: 52px;
+  line-height: 1;
+  color: var(--coin);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Efecto +N al hacer clic */
+.click-fx {
+  position: absolute;
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+  pointer-events: none;
+  animation: floatUp 0.75s ease forwards;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+}
+
+.click-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 20px;
+  letter-spacing: 0.03em;
+}
+
+.shop-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.shop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shop-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 0 4px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+
+.shop-section-label:first-child {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* Item de la tienda */
+.shop-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.08s;
+  background: var(--surface);
+  user-select: none;
+}
+
+.shop-item:hover:not(.disabled) {
+  background: var(--bg);
+  border-color: #ccc;
+}
+
+.shop-item:active:not(.disabled) {
+  transform: scale(0.98);
+}
+
+.shop-item.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.shop-item.pulse {
+  animation: itemPulse 0.2s ease;
+}
+
+@keyframes itemPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.item-icon {
+  font-size: 22px;
+  width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-desc {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.item-cost {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.coin-dot {
+  color: var(--coin);
+  font-size: 10px;
+}
+
+.item-owned {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+/* Botón reiniciar */
+.btn-reset {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.btn-reset:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: #fdf0ef;
+}
+
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--text);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.hidden {
+  display: none;
+}
+
+@media (max-width: 620px) {
+  main {
+    grid-template-columns: 1fr;
+    padding: 20px 16px;
+    gap: 16px;
+  }
+
+  .stats-row {
+    gap: 8px;
+  }
+
+  .clicker-area {
+    height: 160px;
+  }
+
+  #main-btn {
+    width: 110px;
+    height: 110px;
+  }
+
+  .btn-circle {
+    font-size: 40px;
+  }
 }
